@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: my-app
+  namespace: default
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: my-app
+  template:
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      containers:
+        - name: my-app
+          image: pacificdubey/kubernetes:latest
+          ports:
+            - containerPort: 80
+      imagePullSecrets:
+      - name: regcred
+  strategy:
+    blueGreen:
+      activeService: my-app-active
+      previewService: my-app-preview
+      autoPromotionEnabled: true
